@@ -1,0 +1,2 @@
+out)
+    plt.show()
