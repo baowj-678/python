@@ -1,4 +1,5 @@
 from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
 import numpy as np
 
 
@@ -79,18 +80,32 @@ def testTreeFx(Tree, x, dimension=0):
                 return testTreeFx(Tree[i], x, dimension + 1)
     else:
         return Tree
-    return None
+
+def calcLoss(forest, x, y):
+    all_sum = y.shape[0]
+    print(y.shape)
+    correct = 0
+    for i in range(y.shape[0]):
+        positive = 0
+        for j in forest:
+            fx = testTreeFx(j, x[:, i])
+            if fx == y[i]:
+                positive += 1
+        if positive / len(forest) > 0.5:
+            correct += 1
+    return float(correct) / all_sum
 
 def main():
     data = load_iris()
-    data_x = np.transpose(np.array(data.data))
-    data_y = np.array(data.target)
-    print(data_x.shape, data_y.shape)
+    Xtrain, Xtest, Ytrain, Ytest = train_test_split(data.data, data.target, test_size=0.5)
+    Xtrain = np.transpose(np.array(Xtrain))
+    Xtest = np.transpose(np.array(Xtest))
+    Ytrain = np.array(Ytrain)
+    Ytest = np.array(Ytest)
+    print(Xtrain.shape, Ytrain.shape)
+    Forest = randomForest(Xtrain, Ytrain, 100)
+    print(calcLoss(Forest, Xtest, Ytest))
     # tree = decisionTree(data_x, data_y)
-
-    Forest = randomForest(data_x, data_y, 10)
-    for i in range(10):
-        print(testTreeFx(Forest[i], data_x[:, 0]), data_y[0])
     # print(Forest)
 
 main()
