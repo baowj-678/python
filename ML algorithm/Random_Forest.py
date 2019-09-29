@@ -13,9 +13,8 @@ def calcEntropy(data_y):
 
 def getBestPoint(data_x, data_y):#data_x in some dimesion,x y is a row vector
     set_x = np.sort(np.array(list(set(data_x))))
-    point = (0 + set_x[0])/2
-    p = np.sum(data_x > point) / data_x.shape[0]
-    min_entropy = p * calcEntropy(data_y[data_x > point])
+    point = None
+    min_entropy = 10000
     # print(set_x)
     for i in range(set_x.shape[0] - 1):
         # print(i,'\n\n\n\n\n')
@@ -43,10 +42,12 @@ def getMajorLabel(data_y):
             majorLabel = label
     return majorLabel
 
-def decisionTree(data_x, data_y, dimension):
+def decisionTree(data_x, data_y, dimension=0):
     entropy = calcEntropy(data_y)
     if data_x.size == 0:
         return getMajorLabel(data_y)
+    if len(set(data_y)) == 1:
+        return data_y[0]
     point, min_entropy = getBestPoint(data_x[0, :], data_y)
     Gain = entropy - min_entropy
     # print(point)
@@ -71,16 +72,13 @@ def randomForest(data_x, data_y, numOftree):
     return Forest
 
 def testTreeFx(Tree, x, dimension=0):
-    if x.shape[0] - 1 == dimension:
-        for i in Tree.keys():
-            # print(i)
-            if eval(str(x[dimension]) +i):
-                return Tree[i]
-    else:
+    if type(Tree) is dict:
         for i in Tree.keys():
             # print(i)
             if eval(str(x[dimension]) +i):
                 return testTreeFx(Tree[i], x, dimension + 1)
+    else:
+        return Tree
     return None
 
 def main():
@@ -88,9 +86,11 @@ def main():
     data_x = np.transpose(np.array(data.data))
     data_y = np.array(data.target)
     print(data_x.shape, data_y.shape)
-    tree = decisionTree(data_x, data_y, 0)
-    # Forest = randomForest(data_x, data_y, 10)
-    print(testTreeFx(tree, data_x[:, 0]), data_y[0])
+    # tree = decisionTree(data_x, data_y)
+
+    Forest = randomForest(data_x, data_y, 10)
+    for i in range(10):
+        print(testTreeFx(Forest[i], data_x[:, 0]), data_y[0])
     # print(Forest)
 
 main()
