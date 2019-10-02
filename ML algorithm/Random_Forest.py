@@ -103,7 +103,7 @@ def main():
     Ytrain = np.array(Ytrain)
     Ytest = np.array(Ytest)
     print(Xtrain.shape, Ytrain.shape)
-    Forest = randomForest(Xtrain, Ytrain, 100)
+    Forest = randomForest(Xtrain, Ytrain, 1000)
     print(calcLoss(Forest, Xtest, Ytest))
     # tree = decisionTree(data_x, data_y)
     # print(Forest)
