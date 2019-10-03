@@ -1,21 +1,26 @@
 from matplotlib import pyplot as plt
 import numpy as np
 
-a = np.array([[5, 5]
-    ,[6, 6]
-    ,[3, 5]
-    ,[5, 3]
-
-])
-
-plt.scatter(a[:2, 0], a[:2, 1],color='y', marker='+', s=100)
-plt.scatter(a[2:,0], a[2:, 1],color='y', marker='o')
-plt.plot([2,6],[6,2],color='b', linestyle=':')
-plt.plot([1,9],[9,1],color='b', linestyle=':')
-plt.plot([2,7],[7, 2],color='r', linestyle='-')
-# plt.plot([3,5.5],[10,2],color='c', linestyle='-')
-plt.xlim(2, 7)
-plt.ylim(2, 7)
-plt.xlabel('X1', fontsize=12)
-plt.ylabel('X2', fontsize=12)
+data = np.array([])
+num = 200
+for i in range(num):
+    p = []
+    x = np.random.uniform(0, 6)
+    y = np.random.uniform(-5, 2)
+    if y < ((7 - x * x) / 6):
+        p.append(x)
+        p.append(y + np.random.uniform(0, 0.7))
+        p.append(-1)
+    elif y > ((7 - x * x) / 6):
+        p.append(x)
+        p.append(y + np.random.uniform(-0.7, 0))
+        p.append(1)
+    data = np.append(data, p)
+data = data.reshape([-1, 3])
+print(data.shape)
+data_index = data[:, 2]
+data_plus = data[data_index == 1]
+data_minus = data[data_index == -1]
+plt.scatter(data_plus[:, 0],data_plus[:,1])
+plt.scatter(data_minus[:, 0],data_minus[:,1])
 plt.show()
