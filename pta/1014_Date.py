@@ -5,7 +5,7 @@ s4 = input()
 day = [None]*2
 time = None
 for i in range(len(s1)):
-    if(s1[i] == s2[i] and ('A' <= s1[i] <='Z')):
+    if(s1[i] == s2[i] and ('A' <= s1[i] <='G')):
         day[0] = s1[i]
         break
 for i in range(i + 1, len(s1)):
@@ -20,7 +20,7 @@ for i in range(len(s3)):
 
 if '0' <= day[1] <= '9':
     day[1] = ord(day[1]) - ord('0')
-elif 'A' <= day[1] <= 'Z':
+elif 'A' <= day[1] <= 'N':
     day[1] = ord(day[1]) - ord('A') + 10
 
 if day[0] == 'A':
