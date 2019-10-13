@@ -1,0 +1,5 @@
+a = input()
+b = input()
+seta = set(a)
+setb = set(b)
+print(seta)
