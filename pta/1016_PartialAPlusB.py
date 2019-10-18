@@ -11,3 +11,4 @@ if a_n != 0:
 if b_n != 0:
     sum += eval(db*b_n)
 print(sum)
+#accepted

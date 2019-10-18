@@ -43,4 +43,4 @@ if a == b:
     for i in range(4 - len(s)):
         out += '0'
     out += s
-    print(out, '+', out, '= 0000', end='')
+    print(out, '-', out, '= 0000', end='')
