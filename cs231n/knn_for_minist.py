@@ -40,7 +40,7 @@ class Knn_For_Minist():
         for i in range(10):
             self.data[i] = X[Y==i, :]
         self.target = Y
-        
+
     def predict_mean(self, test_X):
         #预测数据的个数
         num_test = test_X.shape[0]
@@ -50,9 +50,10 @@ class Knn_For_Minist():
             distances = np.zeros(10)
             for j in range(10):
                 distances[j] = np.mean(np.sum(np.sum(np.abs(self.data[j] - test_X[i, :]), axis=2),axis=1))
+            # print(distances)
             min_index = np.argmin(distances)
-            # print(min_index)
-            test_Y[i] = self.target[min_index]
+            print(min_index)
+            test_Y[i] = min_index
         return test_Y
         
         
@@ -61,7 +62,7 @@ knn = Knn_For_Minist()
 # ans = knn.predict(data[100:200, :])
 # print(knn.accuracy(target[100:200], ans))
 # print(data[target == 1, :])
-knn.train_meam(data[0:100, :], target[0:100])
-knn.predict_mean(data[100:200])
-
+knn.train_meam(data[0:1000, :], target[0:1000])
+ans = knn.predict_mean(data[0:1000])
+print(knn.accuracy(target[0:1000], ans))
 
