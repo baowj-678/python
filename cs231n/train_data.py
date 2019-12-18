@@ -8,7 +8,8 @@ train = torchvision.datasets.MNIST(root='./mnist/',train=True, transform=transfo
 
 data = train.data.numpy()
 
-print(data.shape)
+plt.imshow(data[90])
+plt.show()
 # dataloader = DataLoader(train, batch_size=50, shuffle=True, num_workers=4)
 # for (step, (x, y)) in enumerate(dataloader):
 #     pass

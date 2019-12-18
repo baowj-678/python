@@ -50,7 +50,8 @@ for t in range(100):
         pred_y = prediction.data.numpy().sequeeze()
         target_y = y.data.numpy()
         plt.scatter(x.data.numpy()[:, 0], x.data.numpy()[:, 1], c=)
-        
+        accuracy = sum(pred_y == target_y)/200
+        plt.text(1.5, -4, 'Accuracy=%.2f' % accuracy, fontdict=)
 
 
 
