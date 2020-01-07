@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import copy
 
 def load_file(fileName):
     text = pd.read_csv(fileName, delimiter='\t')
@@ -18,8 +19,8 @@ class DecisionTree():
         pass
     
     def generateTree(self, data, features):
-        self.tree = self.train(data, features)
-        return self.tree
+        self.Tree = self.train(data, features)
+        return self.Tree
 
     def train(self, data, features):
         n = data.shape[0]
@@ -117,10 +118,16 @@ class DecisionTree():
                 R[(feature, 0, s)] = self.train(data1, features)
             return R
     
-    def predict(self, data):
+    def self_predict(self, data):
         label = np.zeros(data.shape[0])
         for i in range(data.shape[0]):
-            label[i] = self.predict_single(self.tree, data[i])
+            label[i] = self.predict_single(self.Tree, data[i])
+        return label
+
+    def tree_predict(self, Tree, data):
+        label = np.zeros(data.shape[0])
+        for i in range(data.shape[0]):
+            label[i] = self.predict_single(Tree, data[i])
         return label
 
     def predict_single(self, tree, data):
@@ -138,16 +145,51 @@ class DecisionTree():
         if(is_ok == False):
             print(tree, data)
 
+    def cutBranch(self, data, alpha):
+        self.alpha = alpha
+        self.data = data
+        self.cutBranchSubTree(copy.deepcopy(self.Tree))
+        return 
+
+    def cutBranchSubTree(self, Tree):
+        subtree = 0
+        if(type(Tree) is not dict):
+            return (1, Tree)
+
+        for k,v in Tree.items():
+            n, t = self.cutBranchSubTree(v)
+            Tree[k] = t
+            subtree += n
+        
+        labels = np.zeros(self.data.shape[0])
+        for i in range(labels.shape[0]):
+            labels[i] = self.predict_single(Tree, self.data[i])
+        C_Tt = np.sum((labels - self.data[:, -1])**2)
+        C_t = np.average(self.data[:, -1])
+        C_t = np.sum((self.data[:, -1] - C_t)**2)
+        g_t = (C_t - C_Tt)/max((subtree - 1), 1)
+        if(max(g_t, self.alpha) == self.alpha):
+            return (1, C_t)
+        else:
+            self.alpha = g_t
+            return (subtree, Tree)
 
 
-    
+
 fileName = "D:\\我的课件\\AI-pi\\2019年AI π竞赛队暑期招新初选赛题\\2019年AI π竞赛队暑期招新初选赛题\\数据.data"
 data = load_file(fileName)
+
+np.random.shuffle(data)
+print(data.shape)
 dt = DecisionTree()
 features = np.linspace(0, 12, 13, dtype=int)
-dt.generateTree(data[100:, :], features)
+# train
+dt.generateTree(data[: 450, :], features)
 
-pre = dt.predict(data[:100, :])
-print(pre-data[:100, 13])
+# predict
+# pre = dt.predict(data[450 :, :])
+# print(pre-data[450 :, 13])
+test = data[450 :, :]
+print(dt.cutBranch(test, 9))
 
 
