@@ -112,9 +112,9 @@ def train(BATCH_SIZE, G_LR, D_LR):
             d_loss.backward()
             generate_optimizer.step()
             print('batch %d g_loss : %.3f' % (index, d_loss))
+    torch.save(generate_net.state_dict(), 'generate_net.pkl')
+    torch.save(discriminator_net.state_dict(), 'dicriminator_net.pkl')
 
 
 
-# train(10, 0.0005, 0.0005)
-for i in range(10000):
-    print("he")
+train(100, 0.0005, 0.0005)
