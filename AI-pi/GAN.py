@@ -116,5 +116,5 @@ def train(BATCH_SIZE, G_LR, D_LR):
 
 
 # train(10, 0.0005, 0.0005)
-
-print("he")
+for i in range(10000):
+    print("he")
