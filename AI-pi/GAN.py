@@ -36,7 +36,7 @@ class discriminator_Net(torch.nn.Module):
         self.conv1 = torch.nn.Conv2d(in_channels=1, out_channels=64, kernel_size=(5, 5), padding=2)
         self.conv2 = torch.nn.Conv2d(in_channels=64, out_channels=128, kernel_size=(5, 5), padding=2)
         self.f1 = torch.nn.Linear(7*7*128, 1024)
-        self.f2 = torch.nn.Linear(1024, 1)
+        self.f2 = torch.nn.Linear(1024, 2)
 
     def forward(self, x):
         x = self.conv1(x)
@@ -55,16 +55,66 @@ class discriminator_Net(torch.nn.Module):
 def conbine_images(generate_images):
     num = generate_images.shape[0]
     width = int(ma)
-def train(BATCH_SIZE):
-    # generate_net = generate_Net(BATCH_SIZE)
-    # x_train = np.random.uniform(size=[BATCH_SIZE, 100])
-    # x_train = torch.tensor(x_train, dtype=torch.float32)
-    # print(generate_net.forward(x_train))
-    x_train = np.random.uniform(size=[1, 1, 28, 28])
-    x_train = torch.tensor(x_train, dtype=torch.float32)
+
+def load_data():
+    transformer = transforms.Compose(
+        [transforms.ToTensor(),
+        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+        ]
+    )
+    trainset = datasets.MNIST(root='./MNIST', train=True, transform=transformer, download=False)
+    trainset.data = (trainset.data-127.5)/127.5
+    return trainset
+
+def train(BATCH_SIZE, G_LR, D_LR):
+    print('ooooo')
+    # get data
+    dataset = load_data()
+    traindata = dataset.data
+    trainlabels = dataset.targets
+    # testdata = dataset.test_data
+    # testlabels = dataset.targets
+    # get net
+    generate_net = generate_Net(BATCH_SIZE)
+    generate_optimizer = torch.optim.SGD(generate_net.parameters(), momentum=0.9, nesterov=True, lr=G_LR)
+    generate_loss_func = torch.nn.CrossEntropyLoss()
     discriminator_net = discriminator_Net()
-    print(discriminator_net.forward(x_train))
+    discriminator_optimizer = torch.optim.SGD(discriminator_net.parameters(), momentum=0.9, nesterov=True, lr=D_LR)
+    discriminator_loss_func = torch.nn.CrossEntropyLoss()
+    # train
+    for epoch in range(100):
+        print('epoch is', epoch)
+        for index in range(traindata.shape[0]//BATCH_SIZE):
+            noise = torch.tensor(np.random.uniform(-1, 1, size=[BATCH_SIZE, 100]), dtype=torch.float32)
+            image_batch = traindata[index*BATCH_SIZE : (index + 1)*BATCH_SIZE]
+            # g_forward
+            generate_images = generate_net.forward(noise)
+            if (index % 20 == 0):
+                pass
+            # d_forward
+            X = torch.cat((image_batch, generate_images), dim=0)
+            y = torch.tensor([1]*BATCH_SIZE + [0]*BATCH_SIZE)
+            X = torch.reshape(X, [-1, 1, 28, 28])
+            discriminator_labels = discriminator_net.forward(X)
+            # d_backward
+            d_loss = discriminator_loss_func(discriminator_labels, y)
+            print('batch %d d_loss : %.3f' % (index, d_loss))
+            discriminator_optimizer.zero_grad()
+            d_loss.backward()
+            discriminator_optimizer.step()
+            # train generate
+            noise = torch.tensor(np.random.uniform(-1, 1, size=[BATCH_SIZE, 100]), dtype=torch.float32)
+            generate_images = generate_net.forward(noise)
+            generate_images = torch.reshape(generate_images, [-1, 1, 28, 28])
+            discriminator_labels = discriminator_net.forward(generate_images)
+            d_loss = generate_loss_func(discriminator_labels, torch.tensor([0]*BATCH_SIZE))
+            generate_optimizer.zero_grad()
+            d_loss.backward()
+            generate_optimizer.step()
+            print('batch %d g_loss : %.3f' % (index, d_loss))
 
 
 
-train(2)
+# train(10, 0.0005, 0.0005)
+
+print("he")
