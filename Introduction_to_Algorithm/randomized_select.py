@@ -53,7 +53,7 @@ def partition(numbers):
         if(numbers[last] < numbers[mid]):
             temp = numbers[mid]
             numbers[mid] = numbers[last]
-            numbers[last] =numbers[mid]
+            numbers[last] = numbers[mid]
         if(numbers[mid] < numbers[first]):
             temp = numbers[mid]
             numbers[mid] = numbers[first]
@@ -62,15 +62,14 @@ def partition(numbers):
         numbers[mid] = numbers[last - 1]
         numbers[last - 1] = temp
         return numbers[last - 1]
-    
-def gszfbf
 
-n = 
+
 def main():
     numbers = input('input the numbers\n')
     numbers = numbers.split()
     numbers = [int(num) for num in numbers]
     k = eval(input('input the k\n'))
     print(random_select(numbers, k))
+
 
 main()
