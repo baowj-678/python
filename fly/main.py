@@ -14,6 +14,8 @@ from model import Model
 from net import Net
 from path import MODEL_PATH
 from torch.optim import Adam
+import matplotlib.pyplot as plt
+import numpy as np
 
 '''
 项目的超参
@@ -28,7 +30,7 @@ flyai库中的提供的数据处理方法
 传入整个数据训练多少轮，每批次批大小
 '''
 dataset = Dataset(epochs=args.EPOCHS, batch=args.BATCH)
-model = Model(dataset)
+# model = Model(dataset)
 
 '''
 实现自己的网络机构
@@ -41,7 +43,7 @@ else:
 device = torch.device(device)
 net = Net().to(device)
 
-optimizer = Adam(net.parameters(), lr=0.001, betas=(0.9, 0.999))  # 选用AdamOptimizer
+optimizer = Adam(net.parameters(), lr=0.1, betas=(0.9, 0.999))  # 选用AdamOptimizer
 loss_fn = nn.CrossEntropyLoss()  # 定义损失函数
 
 '''
@@ -50,7 +52,9 @@ dataset.get_step() 获取数据的总迭代次数
 '''
 best_score = 0
 # 'dataset.get_step()'
-for step in range(dataset.get_step()):
+loss_ = []
+cor = []
+for step in range(1):
     print("Step:{}/{}".format(step + 1, dataset.get_step()))
 
     net.train()
@@ -70,7 +74,7 @@ for step in range(dataset.get_step()):
     loss.backward()
     optimizer.step()
     print("loss detach: {}".format(loss.detach()))
-
+    loss_.append(loss.detach())
     '''
     实现自己的模型保存逻辑
     '''
@@ -78,14 +82,19 @@ for step in range(dataset.get_step()):
     _, prediction = torch.max(outputs_val.data, 1)
     correct = (prediction == torch.max(y_val_, 1)[1]).sum().item()
     accuracy = correct / batch_len
-
+    #
+    cor.append(accuracy)
+    #
     print("{}step(s) loss :{} acc:{}".format(step + 1, loss.detach(), accuracy))
     if accuracy > best_score and accuracy > 0.8:
         best_score = accuracy
-        model.save_model(net, MODEL_PATH, overwrite=True)
+        # model.save_model(net, MODEL_PATH, overwrite=True)
 
         print("Step: {}, best accuracy is {}. save model.".format(step, best_score))
 
     print(str(step + 1) + "/" + str(dataset.get_step()))
 
 print("The best score is : {}".format(best_score))
+x = np.linspace(1, len(loss_))
+plt.plot(x, loss_)
+plt.show()

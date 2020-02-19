@@ -1,49 +1,64 @@
-# -*- coding: utf-8 -*
-from torch import nn
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class ResidualBlock(nn.Module):
+    def __init__(self, inchannel, outchannel, stride=1):
+        super(ResidualBlock, self).__init__()
+        self.left = nn.Sequential(
+            nn.Conv2d(inchannel, outchannel, kernel_size=3, stride=stride, padding=1, bias=False),
+            nn.BatchNorm2d(outchannel),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(outchannel, outchannel, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.BatchNorm2d(outchannel)
+        )
+        self.shortcut = nn.Sequential()
+        if stride != 1 or inchannel != outchannel:
+            self.shortcut = nn.Sequential(
+                nn.Conv2d(inchannel, outchannel, kernel_size=1, stride=stride, bias=False),
+                nn.BatchNorm2d(outchannel)
+            )
+
+    def forward(self, x):
+        out = self.left(x)
+        out += self.shortcut(x)
+        out = F.relu(out)
+        return out
+
+class ResNet(nn.Module):
+    def __init__(self, ResidualBlock, num_classes=12):
+        super(ResNet, self).__init__()
+        self.inchannel = 64
+        self.conv1 = nn.Sequential(
+            nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.BatchNorm2d(64),
+            nn.ReLU(),
+        )
+        self.layer1 = self.make_layer(ResidualBlock, 64,  2, stride=1)
+        self.layer2 = self.make_layer(ResidualBlock, 128, 2, stride=2)
+        self.layer3 = self.make_layer(ResidualBlock, 256, 2, stride=2)
+        self.layer4 = self.make_layer(ResidualBlock, 512, 2, stride=2)
+        self.fc = nn.Linear(16 * 16 *32, num_classes)
+
+    def make_layer(self, block, channels, num_blocks, stride):
+        strides = [stride] + [1] * (num_blocks - 1)   #strides=[1,1]
+        layers = []
+        for stride in strides:
+            layers.append(block(self.inchannel, channels, stride))
+            self.inchannel = channels
+        return nn.Sequential(*layers)
+
+    def forward(self, x):
+        out = self.conv1(x)
+        out = self.layer1(out)
+        out = self.layer2(out)
+        out = self.layer3(out)
+        out = self.layer4(out)
+        out = F.avg_pool2d(out, 4)
+        out = out.view(out.size(0), -1)
+        out = self.fc(out)
+        return out
 
 
-## build CNN
-class Net(nn.Module):
-    # def __init__(self,num_classes=10):
-    def __init__(self):
-        super(Net, self).__init__()
-        self.conv1 = nn.Conv2d(1, 32, 5, stride=1, padding=2)
-        self.relu1 = nn.ReLU(True)
-        self.bn1 = nn.BatchNorm2d(32)
-        self.pool1 = nn.MaxPool2d(2, 2)
-        self.conv2 = nn.Conv2d(32, 64, 3, stride=1, padding=1)
-        self.relu2 = nn.ReLU(True)
-        self.bn2 = nn.BatchNorm2d(64)
-        self.pool2 = nn.MaxPool2d(2, 2)
-        self.conv3 = nn.Conv2d(64, 128, 3, stride=1, padding=1)
-        self.relu3 = nn.ReLU(True)
-        self.bn3 = nn.BatchNorm2d(128)
-        self.pool3 = nn.MaxPool2d(2, 2)
-        self.fc1 = nn.Linear(128 * 16 * 16, 1024)
-        self.relu4 = nn.ReLU(True)
-        self.fc2 = nn.Linear(1024, 12)
-        self.softmax = nn.Softmax(dim=1)
-
-    def forward(self, input):
-        output = self.conv1(input)
-        output = self.relu1(output)
-        output = self.bn1(output)
-        output = self.pool1(output)
-
-        output = self.conv2(output)
-        output = self.relu2(output)
-        output = self.bn2(output)
-        output = self.pool2(output)
-
-        output = self.conv3(output)
-        output = self.relu3(output)
-        output = self.bn3(output)
-        output = self.pool3(output)
-
-        output = output.view(-1, 128 * 16 * 16)
-        output = self.fc1(output)
-        output = self.relu4(output)
-        output = self.fc2(output)
-        output = self.softmax(output)
-
-        return output
+def Net():
+    return ResNet(ResidualBlock)

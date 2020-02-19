@@ -8,6 +8,7 @@ from PIL import Image
 from numpy import argmax
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
+import torchvision.transforms as transforms
 
 
 '''
@@ -52,12 +53,21 @@ class Processor(Base):
     该方法字段与app.yaml中的input:->columns:对应
     '''
     def input_x(self, path):
-        image = Image.open(os.path.join(data_path.DATA_PATH, path)).convert('L')
-        image = image.crop((32, 32, 223, 223))
+        transform1 = transforms.Compose(
+            [
+                transforms.RandomHorizontalFlip(p=0.5),
+                transforms.RandomVerticalFlip(p=0.5),
+                transforms.RandomResizedCrop(size=(128, 128), scale=(0.4, 1.0), ratio=(0.75, 1.33), interpolation=2),
+                transforms.RandomRotation(degrees=(0,90))
+            ]
+        )
+        image = Image.open(os.path.join(data_path.DATA_PATH, path)).convert('RGB')
+        image = transform1(image)
+        # image = image.crop((32, 32, 223, 223))
         image = image.resize((128, 128))
         x_data = np.array(image)
         x_data = x_data.astype(np.float32)
-        x_data = x_data.reshape([128, 128, 1])
+        x_data = x_data.reshape([128, 128, 3])
         x_data = np.multiply(x_data, 1.0 / 255.0)  ## scale to [0,1] from [0,255]
         x_data = np.transpose(x_data, (2, 0, 1))  ## reshape
         return x_data
