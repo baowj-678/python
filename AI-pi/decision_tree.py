@@ -70,6 +70,7 @@ class DecisionTree():
         return self.Tree
         
     def generateTree(self, data, features):
+        print('\n')
         # no feature return the average of data
         if(features.shape[0] == 0):
             return np.average(data[:, -1])
@@ -136,9 +137,9 @@ class DecisionTree():
         # cut subTree first
         for k,v in Tree.items():
             if(k[1] == 0):
-                n, t = self.cutBranchSubTree(v, data[data[:,k[0]] < k[2], :])
+                n, t = self.cutBranchSubTree(v, data[data[:, k[0]] < k[2], :])
             else:
-                n, t = self.cutBranchSubTree(v, data[data[:,k[0]] >= k[2], :])
+                n, t = self.cutBranchSubTree(v, data[data[:, k[0]] >= k[2], :])
             Tree[k] = t
             subtree += n
         
