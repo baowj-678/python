@@ -16,12 +16,43 @@
 #  -10  5
 
 
+import tree
+
+
 class TreeNode:
     def __init__(self, x):
         self.val = x
         self.left = None
         self.right = None
 
+    def setLeft(self, x):
+        self.left = x
+
+    def setRight(self, x):
+        self.right = x
+
+    def setVal(self, x):
+        self.val = x
+
 
 class Solution:
-    def sortedArrayToBST(self, nums: List[int]) -> TreeNode:
+    def sortedArrayToBST(self, nums):
+        if(len(nums) == 0):
+            return None
+        mid = len(nums)//2
+        root = TreeNode(nums[mid])
+        root.left = self.sortedArrayToBST(nums[:mid])
+        root.right = self.sortedArrayToBST(nums[mid + 1:])
+        return root
+
+
+def main():
+    num = [1, 2, 3, 9]
+    t = tree.Tree()
+    # t.buildTree(num)
+    s = Solution()
+    t.setRoot(s.sortedArrayToBST(num))
+    print(t.levelOrderBottom())
+
+
+main()

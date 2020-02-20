@@ -1,22 +1,4 @@
 import queue
-# 107. 二叉树的层次遍历 II
-# 给定一个二叉树，返回其节点值自底向上的层次遍历。 （即按从叶子节点所在层到根节点所在的层，逐层从左向右遍历）
-
-# 例如：
-# 给定二叉树 [3,9,20,null,null,15,7],
-
-#     3
-#    / \
-#   9  20
-#     /  \
-#    15   7
-# 返回其自底向上的层次遍历为：
-
-# [
-#   [15,7],
-#   [9,20],
-#   [3]
-# ]
 
 
 class TreeNode:
@@ -39,6 +21,9 @@ class Tree:
     def __init__(self):
         self.root = TreeNode(None)
 
+    def setRoot(self, root):
+        self.root = root
+
     def buildTree(self, numList):
         if(len(numList) == 0):
             return None
@@ -59,39 +44,26 @@ class Tree:
                 break
         return self.root
 
+    def getRoot(self):
+        return self.root
 
-class Solution:
-    def levelOrderBottom(self, root: TreeNode):
+    def levelOrderBottom(self):
         Q = queue.Queue()
-        Q.put(root)
+        Q.put(self.root)
         numList = []
-        if(root is not None):
+        if(self.root is not None):
             Q.put(None)
             numList = [[]]
         while(Q.empty() is False):
-            root = Q.get()
-            if(root is None):
+            self.root = Q.get()
+            if(self.root is None):
                 if(Q.empty() is False):
                     numList.insert(0, [])
                     Q.put(None)
             else:
-                numList[0].append(root.val)
-                if(root.left is not None):
-                    Q.put(root.left)
-                if(root.right is not None):
-                    Q.put(root.right)
+                numList[0].append(self.root.val)
+                if(self.root.left is not None):
+                    Q.put(self.root.left)
+                if(self.root.right is not None):
+                    Q.put(self.root.right)
         return numList
-
-
-def main():
-    numList = []
-    # numList = np.random.randn(100)
-    # numList = numList.tolist()
-    tree = Tree()
-    tree = tree.buildTree(numList)
-    # print(tree.val)
-    solution = Solution()
-    print(solution.levelOrderBottom(tree))
-
-
-main()
