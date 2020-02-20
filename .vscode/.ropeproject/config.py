@@ -1,5 +1,5 @@
 # The default ``config.py``
-# flake8: noqa
+# : noqa
 
 
 def set_prefs(prefs):
