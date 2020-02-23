@@ -17,11 +17,37 @@
 
 class Solution:
     def singleNumber(self, nums) -> int:
-        pass
+        repeat = [0]*40
+        position = [0]*40
+        for i in range(40):
+            position[i] = 1 << i
+        for i in range(len(nums)):
+            for j in range(40):
+                repeat[j] += (nums[i] & position[j]) >> j
+        sum = 0
+        for j in range(40):
+            repeat[j] -= 3*(repeat[j]//3)
+            if(repeat[j] > 0):
+                sum |= (1 << j)
+        if(repeat[39] != 0):
+            sum -= 2**40
+            pass
+        print(repeat)
+        return int(sum)
 
 
 def main():
-    pass
+    nums = [43, 16, 45,
+            89, 45, -2147483648,
+            45, 2147483646, -2147483647,
+            -2147483648, 43, 2147483647,
+            -2147483646, -2147483648, 89,
+            -2147483646, 89, -2147483646,
+            -2147483647, 2147483646, -2147483647,
+            16, 16, 2147483646,
+            43]
+    s = Solution()
+    print(s.singleNumber(nums))
 
 
 main()
