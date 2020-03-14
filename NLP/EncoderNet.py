@@ -3,8 +3,10 @@ import torch.nn as nn
 from torch.autograd import Variable
 
 MAX_LENGTH = 100
+
+
 class EncoderRNN(nn.Module):
-    def  __init__(self, input_size, hidden_size):
+    def __init__(self, input_size, hidden_size):
         super(EncoderRNN, self).__init__()
         self.hidden_size = hidden_size
         self.embedding = nn.Embedding(input_size, hidden_size)
@@ -17,9 +19,9 @@ class EncoderRNN(nn.Module):
         return output, hidden
 
     def initHidden(self):
-        
         result = Variable(torch.zeros(1, 1, self.hidden_size))
         return result
+
 
 class AttnDecoderRNN(nn.Module):
     def __init__(self, hidden_size, output_size, dropout_p=0.1, max_length=MAX_LENGTH):
