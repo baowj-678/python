@@ -21,6 +21,10 @@
 
 class Solution:
     def isSubsequence(self, s: str, t: str) -> bool:
+        if(len(s) == 0):
+            return True
+        if(len(t) == 0):
+            return False
         end = len(s) - 1
         for i in range(len(t) - 1, -1, -1):
             if(s[end] == t[i]):
