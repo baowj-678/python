@@ -2,6 +2,7 @@ import unicodedata
 import re
 from torchvision import transforms
 
+
 PAD_token = 0
 SOS_token = 1
 EOS_token = 2
@@ -13,8 +14,8 @@ class Lang:
         self.trimmed = False
         self.word2index = {}
         self.word2count = {}
-        self.index2word = {0: "PAD", 1: "SOS", 2: "EOS"}#分别为，开头，中间，结尾
-        self.n_words = 3#count_default tokens
+        self.index2word = {0: "PAD", 1: "SOS", 2: "EOS"} #分别为，开头，中间，结尾
+        self.n_words = 3 #count_default tokens
 
     def index_words(self, sentence):
         for word in sentence.split(' '):

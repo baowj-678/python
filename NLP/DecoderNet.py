@@ -1,10 +1,13 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
+from torch.autograd import Variable
 MAX_LENGTH = 100
+
+
 class AttnDecoderRNN(nn.Module):
-    def __init__(self, hidden_size, output_size, dropout_p=0.1, max_length=MAX_LENGTH):
+    def __init__(self, hidden_size, output_size, dropout_p=0.1,
+                 max_length=MAX_LENGTH):
         super(AttnDecoderRNN, self).__init__()
         self.hidden_size = hidden_size
         self.output_size = output_size
@@ -31,6 +34,7 @@ class AttnDecoderRNN(nn.Module):
         output, hidden = self.gru(output, hidden)
         output = F.log_softmax(self.out(output[0]), dim=1)
         return output, hidden, attn_weights
+
     def initHidden(self):
         result = Variable(torch.zeros(1, 1, self.hidden_size))
         return result
