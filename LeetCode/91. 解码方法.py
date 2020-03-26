@@ -24,4 +24,43 @@
 
 class Solution:
     def numDecodings(self, s: str) -> int:
-        pass
+        if(len(s) == 0 or s[0] == '0'):
+            return 0
+        l_ = [0]*len(s)
+        l_[0] = 1
+        if(len(s) >= 2):
+            if(int(s[1]) == 0):
+                if(int(s[0:2]) <= 26):
+                    l_[1] = 1
+                else:
+                    l_[1] = 0
+                    return 0
+            else:
+                if(int(s[0:2]) <= 26):
+                    l_[1] = 2
+                else:
+                    l_[1] = 1
+        for i in range(2, len(s), 1):
+            if(s[i - 1] == '0'):
+                if(s[i] != '0'):
+                    l_[i] = l_[i - 1]
+                else:
+                    return 0
+            else:
+                if(s[i] == '0'):
+                    if(int(s[i - 1:i + 1]) <= 26):
+                        l_[i] = l_[i - 2]
+                    else:
+                        l_[i] = 0
+                        return 0
+                else:
+                    if(int(s[i-1: i+1]) <= 26):
+                        l_[i] = l_[i - 1] + l_[i - 2]
+                    else:
+                        l_[i] = l_[i - 1]
+        return l_[len(s) - 1]
+
+
+s = '101'
+so = Solution()
+print(so.numDecodings(s))
