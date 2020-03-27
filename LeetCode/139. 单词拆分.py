@@ -23,19 +23,24 @@
 
 class Solution:
     def wordBreak(self, s: str, wordDict) -> bool:
-        isOk = False
-        for i in range(len(wordDict)):
-            begin = len(s) - len(wordDict[i])
-            if(begin > 0 and s[begin:len(s)] == wordDict[i]):
-                isOk = self.wordBreak(s[:begin], wordDict)
-                if(isOk):
-                    return True
-            elif(begin == 0 and s[begin:len(s)] == wordDict[i]):
-                return True
-        return isOk
+        isOK = [False]*len(s)
+        begin = 0
+        while(begin < len(s)):
+            for word in wordDict:
+                end = begin + len(word)
+                if(end <= len(s)):
+                    if(s[begin: end] == word):
+                        isOK[end - 1] = True
+            if(isOK[begin] is not True):
+                begin += 1
+            while(begin < len(s) and isOK[begin] is False):
+                begin += 1
+            begin += 1
+        print(isOK)
+        return isOK[-1]
 
 
-s = "leetcode"
-wordDict = ["leet", "code", "sand", "and", "cat"]
+s = "abcd"
+wordDict = ["a", "abc", "b", "cd", "cat"]
 solution = Solution()
 print(solution.wordBreak(s=s, wordDict=wordDict))
