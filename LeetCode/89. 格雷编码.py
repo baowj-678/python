@@ -64,4 +64,4 @@ class Solution:
 
 
 s = Solution()
-print(s.grayCode(2))
+print(s.grayCode(20))
