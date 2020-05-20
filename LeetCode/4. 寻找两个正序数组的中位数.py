@@ -20,60 +20,50 @@
 
 class Solution:
     def findMedianSortedArrays(self, nums1, nums2):
-        n = len(nums1)
-        m = len(nums2)
-        if(n > m):
-            n, m, nums1, nums2 = m, n, nums2, nums1
-        imin = 0
-        imax = n - 1
-        if(imin == imax):
-            jRight = m // 2
-            if(m % 2 == 0):
-                jLeft = jRight - 1
-                if(nums2[jLeft] > nums1[imin]):
-                    return nums2[jLeft]
-                elif(nums2[jRight] < nums1[imin]):
-                    return nums2[jRight]
-                else:
-                    return nums1[imin]
+        # m < n, len(nums1) < len(nums2)
+        m, n = len(nums1), len(nums2)
+        if m > n:
+            nums1, nums2, m, n = nums2, nums1, n, m
+        if n == 0:
+            raise ValueError
+
+        imin, imax, half_len = 0, m, (m + n + 1) // 2
+        while imin <= imax:
+            i = (imin + imax) // 2
+            j = half_len - i
+            if i < m and nums2[j-1] > nums1[i]:
+                # i is too small, must increase it
+                imin = i + 1
+            elif i > 0 and nums1[i-1] > nums2[j]:
+                # i is too big, must decrease it
+                imax = i - 1
             else:
-                if(n == 1):
-                    return (n + m) / 2.0
+                # i is perfect
+
+                if i == 0:
+                    max_of_left = nums2[j-1]
+                elif j == 0:
+                    max_of_left = nums1[i-1]
                 else:
-                    j = jRight
-                    jRight = jRight + 1
-                    jLeft = j - 1
-                    if(nums1[imin] < nums2[jLeft]):
-                        return (nums2[jLeft] + nums2[j]) / 2
-                    elif(nums1[imin] > nums2[jRight]):
-                        return (nums2[jRight] + nums2[j]) / 2
-                    else:
-                        return (nums1[imin] + nums2[j]) / 2
+                    max_of_left = max(nums1[i-1], nums2[j-1])
 
-        while(imin < imax):
-            print(imin, imax)
-            iRight = (imin + imax) // 2 + 1
-            jRight = (m + n) // 2 - iRight
-            iLeft = iRight - 1
-            jLeft = jRight - 1
-            print(iLeft, iRight, jLeft, jRight)
-            if(nums1[iLeft] > nums2[jRight]):
-                imax = iRight
-            elif(nums2[jLeft] > nums1[iRight]):
-                imin = iRight
-            else:
-                if((m + n) % 2 == 0):
-                    return max(nums1[iLeft], nums2[jLeft]) +\
-                           min(nums1[iRight], nums2[jRight]) / 2.0
+                if (m + n) % 2 == 1:
+                    return max_of_left
+
+                if i == m:
+                    min_of_right = nums2[j]
+                elif j == n:
+                    min_of_right = nums1[i]
                 else:
-                    return min(nums1[iRight], nums2[jRight])
-        return None
+                    min_of_right = min(nums1[i], nums2[j])
+
+                return (max_of_left + min_of_right) / 2.0
 
 
-if(__name__ == "__main__"):
+if __name__ == "__main__":
     s = Solution()
     nums1 = [1, 2]
-    nums2 = [3, 4]
+    nums2 = [2, 4]
     print(s.findMedianSortedArrays(nums1, nums2))
 
 
