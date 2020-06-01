@@ -15,7 +15,7 @@
 # 只忽略dbg目录，不忽略dbg文件
 
 __pycache__/
-.vscode/
+/.vscode/
 CIFAR10/
 fly/
 /a4/
