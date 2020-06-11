@@ -2,7 +2,7 @@ import pandas as pd
 
 
 class Dictionary:
-    def __init__(self, path='SE_experiment3/edict.mini.csv'):
+    def __init__(self, path='SE_experiment3/temp.csv'):
         self.data = None
         self.path = path
         self.readFile(self.path)
@@ -10,7 +10,7 @@ class Dictionary:
     def readFile(self, path: str):
         try:
             print('reading data........')
-            self.data = pd.read_csv(self.path, low_memory=False)
+            self.data = pd.read_csv(path, low_memory=False)
             self.nums = self.data.shape[0]
             print('success........')
         except(Exception):
@@ -23,13 +23,15 @@ class Dictionary:
             self.readFile(self.path)
         point, word_ = 0, self.data['word'][0]
         left, right = 0, self.nums - 1
-        while(word_ != word and left < right):
-            if(word > word_):
-                left = point
-            else:
-                right = point
+        while(left <= right):
             point = (left + right) // 2
             word_ = self.data['word'][point]
+            if(word == word_):
+                break
+            elif(word > word_):
+                left = point + 1
+            else:
+                right = point - 1
         if(word_ == word):
             if(isGetIndex):
                 return point
@@ -43,44 +45,83 @@ class Dictionary:
         wordInfo = self.search(word)
         if(wordInfo is None):
             return None
-        return wordInfo['translation'].split('\\n')
+        elif(pd.isnull(wordInfo['translation'])):
+            return None
+        else:
+            return wordInfo['translation'].split('\\n')
 
     def getDefinition(self, word: str) -> list:
         wordInfo = self.search(word)
         if(wordInfo is None):
             return None
-        return wordInfo['definition'].split('\\n')
+        elif(pd.isnull(wordInfo['definition'])):
+            return None
+        else:
+            return wordInfo['definition'].split('\\n')
 
     def getPhonetic(self, word: str):
         wordInfo = self.search(word)
-        return wordInfo['phonetic']
+        if(wordInfo is None):
+            return None
+        elif(pd.isnull(wordInfo['phonetic'])):
+            return None
+        return wordInfo['phonetic'].split('\\n')
 
     def getQuerry(self, word: str, querry: list):
         wordInfo = self.search(word)
         if(wordInfo is None):
             return None
         ans = []
-        for i, v in wordInfo.items():
-            ans.append(v)
+        for i, v in wordInfo[querry].items():
+            if(i in ('definition', 'translation', 'sentences')):
+                if(pd.isnull(v)):
+                    ans.append(None)
+                else:
+                    ans.append(v.split('\\n'))
+            elif(i == 'exchange'):
+                if(pd.isnull(v)):
+                    ans.append(None)
+                else:
+                    ans.append(v.split('/'))
+            else:
+                if(pd.isnull(v)):
+                    ans.append(None)
+                else:
+                    ans.append(v)
         return ans
 
     def getSentences(self, word: str) -> list:
         wordInfo = self.search(word)
         if(wordInfo is None):
             return None
+        elif(pd.isnull(wordInfo['sentences'])):
+            return None
         return wordInfo['sentences'].split('\\n')
 
-    def setSentence(self, word: str, a: str):
-        index = self.search(word, isGetIndex=True)
-        self.data.loc[index, 'sentences'] = a
+    def getExchange(self, word: str):
+        wordInfo = self.search(word)
+        if(wordInfo is None):
+            return None
+        elif(pd.isnull(wordInfo['exchange'])):
+            return None
+        return wordInfo['exchange'].split('/')
 
     def saveTo(self, newPath=''):
         if(newPath == ''):
             self.data.to_csv(self.path, index=False)
         else:
             self.data.to_csv(newPath, index=False)
+    
+    
+    def setSentence(self, word: str, a: str):
+        index = self.search(word, isGetIndex=True)
+        if(index is None):
+            return None
+        self.data.loc[index, 'sentences'] = a
 
 
-if __name__ == '__main__':
-    print('hello\n')
-    dictt = Dictionary('SE_experiment3/ecdict.mini.csv')
+Dict = Dictionary()
+Dict.getExchange('exchange')
+# if __name__ == '__main__':
+#     print('hello\n')
+#     dictt = Dictionary('SE_experiment3/ecdict.mini.csv')
