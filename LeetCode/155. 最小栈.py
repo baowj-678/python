@@ -18,62 +18,48 @@
 
 
 class MinStack:
-
     def __init__(self):
-        self.stack = [0]*100
-        self.pointTop = -1
-        self.pointMin = -1
+        self.pointNow = 0
+        self.stack = []
+        self.minElement = []
         self.nowSize = 0
-        self.SIZE = 100
 
     def push(self, x: int) -> None:
-        if(self.nowSize >= self.SIZE):
-            return False
+        self.stack.append(x)
+        if(self.nowSize > 0):
+            if(x < self.minElement[-1]):
+                self.minElement.append(x)
+            else:
+                self.minElement.append(self.minElement[-1])
         else:
-            self.nowSize += 1
-        self.pointTop += 1
-        if(self.pointMin == -1):
-            self.pointMin = 0
-        else:
-            if(self.stack[self.pointMin] > x):
-                self.pointMin = self.pointTop
-        self.stack[self.pointTop] = x
-        return True
+            self.minElement.append(x)
+        self.nowSize += 1
 
     def pop(self) -> None:
         if(self.nowSize <= 0):
             return None
         else:
-            if(self.pointTop == self.pointMin):
-                min = self.stack[0]
-                self.pointMin = 0
-                for i in range(self.nowSize - 1):
-                    if(min > self.stack[i]):
-                        min = self.stack[i]
-                        self.pointMin = i
+            self.stack.pop(-1)
+            self.minElement.pop(-1)
             self.nowSize -= 1
-            self.pointTop -= 1
-            if(self.nowSize == 0):
-                self.pointMin = -1
-        return self.stack[self.nowSize]
 
     def top(self) -> int:
         if(self.nowSize <= 0):
             return None
         else:
-            return self.stack[self.pointTop]
+            return self.stack[-1]
 
     def getMin(self) -> int:
-        if(self.pointTop == -1):
+        if(self.nowSize <= 0):
             return None
         else:
-            return self.stack[self.pointMin]
+            return self.minElement[-1]
 
     def printStack(self):
         print(self.stack)
 
 
-def main():
+if __name__ == '__main__':
     stack = MinStack()
     while(True):
         i = eval(input("1.push;\n2.pop;\n3.top;\n4.getMin;\n5.printStack;\n\
@@ -92,6 +78,3 @@ def main():
                 print(stack.getMin())
             else:
                 stack.printStack()
-
-
-main()
