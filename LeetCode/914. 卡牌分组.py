@@ -42,22 +42,34 @@
 
 class Solution:
     def hasGroupsSizeX(self, deck) -> bool:
+        def gcd(x, y):
+            if(x == 0 or y == 0):
+                return None
+            else:
+                big = max(x, y)
+                small = min(x, y)
+                while(big > small and small != 0):
+                    tmp = small
+                    small = big % small
+                    big = tmp
+                return big
+        # 统计出现次数
         num2sum = [0]*10000
         for i in range(len(deck)):
             num2sum[deck[i]] += 1
-        k = 0
-        x = num2sum[k]
-        while(x == 0 and k < 10000):
-            k += 1
-            x = num2sum[k]
-        for i in range(k + 1, len(num2sum)):
-            if(x != num2sum[i] and num2sum[i] != 0):
-                return False
-        if(x >= 2):
+        g = -1
+        for num in num2sum:
+            if(num > 0):
+                if(g == -1):
+                    g = num
+                else:
+                    g = gcd(g, num)
+        if(g >= 2):
             return True
-        return False
+        else:
+            return False
 
 
 s = Solution()
-num = [1, 1, 2, 2, 2, 2]
+num = []
 print(s.hasGroupsSizeX(num))
