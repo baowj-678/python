@@ -27,4 +27,39 @@
 
 class Solution:
     def canFinish(self, numCourses: int, prerequisites) -> bool:
-        pass
+        lastCourses = [[] for i in range(numCourses)]
+        for request in prerequisites:
+            if(len(request) >= 2):
+                lastCourses[request[1]].append(request[0])
+
+        def canFinish(lastCourses, i, n, s):
+            if(lastCourses[i] == []):
+                return True
+            elif(lastCourses[i] is None):
+                return False
+            if(n > s):
+                lastCourses[i] = None
+                return False
+            else:
+                isFinish = True
+                for k in lastCourses[i]:
+                    if(canFinish(lastCourses, k, n + 1, s) is False):
+                        isFinish = False
+                        break
+                if(isFinish is False):
+                    lastCourses[i] = None
+                    return False
+                else:
+                    lastCourses[i] = []
+                    return True
+
+        for i in range(numCourses):
+            if(canFinish(lastCourses, i, 1, numCourses) is False):
+                return False
+        return True
+
+
+if __name__ == '__main__':
+    solution = Solution()
+    numCourses, prerequisites = 3, [[2, 2]]
+    print(solution.canFinish(numCourses, prerequisites))
