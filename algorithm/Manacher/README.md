@@ -49,7 +49,7 @@ acbbbggg
 
   例如：
 
-  ![](one.webp)
+  ![first](one.webp)
 
 * **最右回文右边界的对称中心**：$C$
 
@@ -57,7 +57,7 @@ acbbbggg
 
   例如：
 
-  ![](two.webp)
+  ![second](two.webp)
 
 
 
