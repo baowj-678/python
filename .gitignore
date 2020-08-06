@@ -14,6 +14,7 @@
 
 # 只忽略dbg目录，不忽略dbg文件
 
+*/__pycache__/
 __pycache__/
 /.vscode/
 CIFAR10/
