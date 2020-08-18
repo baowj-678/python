@@ -1,6 +1,6 @@
 class ListNode:
-    def __init__(self, x):
-        self.val = x
+    def __init__(self, val):
+        self.val = val
         self.next = None
 
 
@@ -8,7 +8,7 @@ class List:
     def __init__(self):
         pass
 
-    def getHead(nums) -> ListNode:
+    def getHead(self, nums) -> ListNode:
         if(len(nums) == 0):
             return None
         temp = ListNode(nums[0])
@@ -20,7 +20,7 @@ class List:
         tail.next = None
         return head
 
-    def printList(head):
+    def printList(self, head):
         while(head is not None):
             print(head.val, end='')
             print('->', end='')
