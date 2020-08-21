@@ -15,23 +15,17 @@
 #     /  \
 #    15   7
 # 返回它的最小深度  2.
-import tree
-
-
-class TreeNode:
-    def __init__(self, x):
-        self.val = x
-        self.left = None
-        self.right = None
+from LeetCode.tree import TreeNode
 
 
 class Solution:
     def minDepth(self, root: TreeNode) -> int:
-        pass
-
-
-def main():
-    pass
-
-
-main()
+        if root is None:
+            return 0
+        else:
+            left = self.minDepth(root.left)
+            right = self.minDepth(root.right)
+            if left == 0 or right == 0:
+                return max(left, right) + 1
+            else:
+                return min(left, right) + 1
