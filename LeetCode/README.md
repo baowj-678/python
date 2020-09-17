@@ -12,3 +12,8 @@
 | [1024. 视频拼接](1024.%20视频拼接.py)                        | **排序**、**贪心算法** |
 | [1345. 跳跃游戏 IV](1345.%20跳跃游戏%20IV.py)                | **BFS、队列**          |
 
+
+
+[C++](https://github.com/baowj-678/cpp_algorithm/tree/master/leetcode)
+
+[Java](https://github.com/baowj-678/JAVA/tree/master/Leet_Code)
