@@ -11,4 +11,5 @@
 | [Python_Image](Python_Image)            | python图像处理相关内容 |
 | [LittleProject](LittleProject)          | python小项目           |
 | [Javascript](Javascript)                | javascript代码         |
+| [笔试](笔试)                            | 笔试题                 |
 
