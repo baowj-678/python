@@ -96,7 +96,25 @@
 
 [code](T2-3.py)
 
+**解析**：
 
+**令**
+
+$f(x)$：表示长度为$x$的巧克力棒到长度小于$d$的次数；
+
+$\phi(i,x)=\frac{1}{x}$：表示长度为$x$的巧克力棒，在$i$点扳断的概率；
+
+**则**：
+
+$$f(x)=\left\{\begin{aligned} 0\qquad x\leq d \\ 1+\int_0^df(t)\phi(t)dt + \int_d^xf(t)\phi(t)dt \quad x > d \end{aligned}\right.$$
+
+$$=\left\{\begin{aligned} 0\quad x\leq d \\ 1 + \int_d^xf(t)\phi(t)dt \quad x > d \end{aligned}\right.$$
+
+$$=\left\{\begin{aligned} 0\quad x\leq d \\ 1 + (\int_d^xf(t)dt)/x \quad x > d \end{aligned}\right.$$
+
+**解得**：
+
+$$f(x)=\left\{\begin{aligned} 0\qquad x\leq d \\ 1+\ln{\frac{x}{d}} \quad x>d\end{aligned}\right.$$
 
 ***
 
