@@ -20,6 +20,7 @@ __pycache__/
 CIFAR10/
 fly/
 /a4/
+/.idea/
 
 # 只忽略dbg文件，不忽略dbg目录
 
