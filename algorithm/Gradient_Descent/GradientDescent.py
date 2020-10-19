@@ -1,7 +1,7 @@
 """ 正定二次函数最速下降法
 @Author: Bao Wenjie
 @Email: bwj_678@qq.com
-@Date: 2020/10/17
+@Date: 2020/10/19
 """
 import numpy as np
 

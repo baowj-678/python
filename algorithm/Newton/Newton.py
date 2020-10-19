@@ -1,7 +1,7 @@
 """ 牛顿迭代法
 @Author: Bao Wenjie
 @Email: bwj_678@qq.com
-@Date: 2020/10/18
+@Date: 2020/10/19
 """
 import numpy as np
 
