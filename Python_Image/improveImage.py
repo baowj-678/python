@@ -4,7 +4,6 @@ from PIL import Image
 
 '''
 
-
 def produceImage(file_in, width, height, file_out):
     image = Image.open(file_in)
     resized_image = image.resize((width, height), Image.ANTIALIAS)
